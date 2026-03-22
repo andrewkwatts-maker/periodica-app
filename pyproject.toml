@@ -1,0 +1,47 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "periodica-app"
+version = "1.0.0"
+description = "Scientific visualization application for particle physics, atomic chemistry, materials science, and biology"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+authors = [{name = "Andrew Watts"}]
+keywords = ["chemistry", "physics", "periodic-table", "visualization", "materials-science", "PySide6"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Chemistry",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+dependencies = [
+    "periodica>=1.0.0",
+    "PySide6>=6.5.0",
+    "numpy>=1.24.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/andrewkwatts-maker/periodica-app"
+Repository = "https://github.com/andrewkwatts-maker/periodica-app"
+
+[project.scripts]
+periodica-app = "periodica_app.main:main"
+
+[project.gui-scripts]
+periodica = "periodica_app.main:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+periodica_app = ["config/*.json"]
