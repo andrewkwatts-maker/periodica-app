@@ -1,12 +1,32 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import importlib
+import os
+
+# Find periodica's installed data directory
+periodica_pkg = importlib.import_module('periodica')
+periodica_data = os.path.join(os.path.dirname(periodica_pkg.__file__), 'data')
 
 a = Analysis(
-    ['main.py'],
-    pathex=[],
+    ['src/periodica_app/__main__.py'],
+    pathex=['src'],
     binaries=[],
-    datas=[('data', 'data'), ('Quarks', 'Quarks'), ('AntiQuarks', 'AntiQuarks'), ('SubAtomic', 'SubAtomic'), ('Molecules', 'Molecules'), ('config', 'config')],
-    hiddenimports=[],
+    datas=[
+        (periodica_data, 'periodica/data'),
+        ('src/periodica_app/config', 'periodica_app/config'),
+    ],
+    hiddenimports=[
+        'periodica',
+        'periodica.core',
+        'periodica.data',
+        'periodica.utils',
+        'periodica.layout_math',
+        'periodica_app',
+        'periodica_app.ui',
+        'periodica_app.layouts',
+        'periodica_app.core',
+        'periodica_app.utils',
+    ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -21,7 +41,7 @@ exe = EXE(
     a.scripts,
     [],
     exclude_binaries=True,
-    name='Periodics',
+    name='PeridicaApp',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
@@ -40,5 +60,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='Periodics',
+    name='PeridicaApp',
 )

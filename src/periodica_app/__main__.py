@@ -1,4 +1,4 @@
 """Allow running as ``python -m periodica_app``."""
-from periodica_app.main import main
+from periodica_app.app import main
 
 main()

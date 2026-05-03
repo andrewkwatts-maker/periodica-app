@@ -4,17 +4,22 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "periodica-app"
-version = "1.0.0"
-description = "Scientific visualization application for particle physics, atomic chemistry, materials science, and biology"
+version = "1.1.0"
+description = "KivyMD desktop + Android GUI for the periodica scientific computation library. Browse the registry, run generators, fold proteins, sample microstructures, and export 3D meshes / shaders interactively."
 readme = "README.md"
 requires-python = ">=3.10"
 license = "Apache-2.0"
 authors = [{name = "Andrew Watts"}]
-keywords = ["chemistry", "physics", "periodic-table", "visualization", "materials-science", "PySide6"]
+keywords = [
+    "chemistry", "physics", "periodic-table", "visualization",
+    "materials-science", "protein-folding", "microstructure",
+    "kivy", "kivymd", "mobile", "android", "apk", "desktop",
+]
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "Intended Audience :: Education",
+    "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -25,8 +30,9 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Visualization",
 ]
 dependencies = [
-    "periodica>=1.0.0",
-    "PySide6>=6.5.0",
+    "periodica>=1.1.0",
+    "kivy>=2.3.0",
+    "kivymd>=1.2.0",
     "numpy>=1.24.0",
 ]
 
@@ -35,13 +41,13 @@ Homepage = "https://github.com/andrewkwatts-maker/periodica-app"
 Repository = "https://github.com/andrewkwatts-maker/periodica-app"
 
 [project.scripts]
-periodica-app = "periodica_app.main:main"
+periodica-app = "periodica_app.app:main"
 
 [project.gui-scripts]
-periodica = "periodica_app.main:main"
+periodica = "periodica_app.app:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
 
 [tool.setuptools.package-data]
-periodica_app = ["config/*.json"]
+periodica_app = ["config/*.json", "kv/*.kv"]
