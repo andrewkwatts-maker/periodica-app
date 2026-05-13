@@ -18,3 +18,6 @@ Thumbs.db
 
 # Secrets
 config/secrets.json
+
+# CLAUDE.md is Claude Code's per-project context — not part of the source
+CLAUDE.md
