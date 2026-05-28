@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "periodica-app"
-version = "2.0.0a0"
+version = "2.0.36"
 description = "KivyMD desktop + Android GUI for the periodica scientific computation library. Browse the registry, run generators, fold proteins, sample microstructures, and export 3D meshes / shaders interactively."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -30,7 +30,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Visualization",
 ]
 dependencies = [
-    "periodica>=1.1.0",
+    "periodica>=2.0.36",
     "kivy>=2.3.0",
     "kivymd>=1.2.0",
     "numpy>=1.24.0",

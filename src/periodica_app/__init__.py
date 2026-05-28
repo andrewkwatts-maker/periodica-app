@@ -12,4 +12,4 @@ Usage::
     python -m periodica_app  # as module
 """
 
-__version__ = "1.1.0"
+__version__ = "2.0.36"
