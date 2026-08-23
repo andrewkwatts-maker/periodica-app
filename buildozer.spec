@@ -8,7 +8,7 @@ source.dir = src/periodica_app
 source.include_exts = py,png,jpg,kv,atlas,json,md,ttf
 source.include_patterns = config/*.json,kv/*.kv
 
-version = 2.0.0
+version = 2.3.0
 
 requirements = python3,kivy==2.3.0,kivymd==1.2.0,numpy,periodica
 
