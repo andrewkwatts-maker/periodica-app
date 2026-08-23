@@ -44,6 +44,25 @@ def _get_particle_type(item):
     return "composite"
 
 
+def _property_range(items, prop):
+    """(min, max) of a numeric property across the drawn items.
+
+    The gradient previously used a hardcoded 0..1 range, so any real-world
+    property (mass runs 0.5 to ~173,000 MeV) saturated every particle to the
+    end colour. Ranges must come from the data being drawn.
+    """
+    values = [
+        v for v in (item.get(prop) for item in items)
+        if isinstance(v, (int, float)) and not isinstance(v, bool)
+    ]
+    if not values:
+        return (0.0, 1.0)
+    lo, hi = min(values), max(values)
+    if lo == hi:  # all identical: keep the gradient midpoint stable
+        return (lo - 0.5, hi + 0.5)
+    return (lo, hi)
+
+
 def _get_fill_color(item, state):
     """Get fill color for an item based on state fill_property."""
     fill_prop = state.get("fill_property", "particle_type")
@@ -52,14 +71,15 @@ def _get_fill_color(item, state):
         ptype = _get_particle_type(item)
         return PARTICLE_TYPE_COLORS.get(ptype, (0.5, 0.5, 0.5, 1))
 
-    # Numeric property — gradient
+    # Numeric property — gradient over the DATA range, not a fixed 0..1
     value = item.get(fill_prop)
     if value is None:
         return (0.4, 0.4, 0.5, 1)
 
-    if isinstance(value, (int, float)):
+    if isinstance(value, (int, float)) and not isinstance(value, bool):
+        lo, hi = _property_range(state.get("items", []), fill_prop)
         return value_to_gradient_color(
-            value, 0, 1,
+            value, lo, hi,
             start_color=(0.2, 0.3, 0.8, 1),
             end_color=(0.9, 0.2, 0.2, 1),
         )
@@ -265,8 +285,10 @@ class QuarkForceNetworkRenderer(BaseRenderer):
         return self.merge_positions(items, positioned)
 
     def draw(self, canvas, items, state, width, height):
-        # Draw force connections between particles sharing interactions
-        self._draw_force_lines(canvas, items)
+        # Force lines are opt-in ("Show Force Lines" toggle). The O(n^2)
+        # pairwise pass previously drew unconditionally, ignoring the toggle.
+        if state.get("show_connections"):
+            self._draw_force_lines(canvas, items)
         for item in items:
             _draw_particle(self, canvas, item, state)
 

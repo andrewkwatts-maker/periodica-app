@@ -138,6 +138,13 @@ class DomainScreen(Screen):
     # Info display config
     display_config = ObjectProperty(None, allownone=True)
 
+    # Optional enriching loader: callable(screen) -> list[dict]. When set it
+    # replaces the generic DataManager path, which returns RAW JSON dicts --
+    # for quarks that meant no sm_row/sm_col/particle_type, so the flagship
+    # Standard Model layout dropped every particle into the off-screen
+    # non-SM fallback. Domains needing computed fields supply this.
+    data_loader = ObjectProperty(None, allownone=True)
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._data_manager = get_data_manager()
@@ -147,6 +154,12 @@ class DomainScreen(Screen):
 
     def _initialize(self, dt):
         """Deferred initialization after widgets are ready."""
+        # Screen-side record of every drawer toggle, keyed by toggle key,
+        # so the data loader can read 'Show Antiparticles' etc. and load
+        # DIFFERENT data instead of reloading identical data.
+        self._toggle_state = {
+            t["key"]: t.get("default", False) for t in (self.toggles or [])
+        }
         self._load_data()
         self._setup_controls()
         self._setup_info()
@@ -162,8 +175,19 @@ class DomainScreen(Screen):
         canvas_view.items = self._items
         canvas_view.bind(selected_item=self._on_item_selected)
 
+    def toggle_state(self, key, default=False):
+        """Current value of a drawer toggle (recorded in _on_action)."""
+        return self._toggle_state.get(key, default)
+
     def _load_data(self):
-        """Load items from the periodica data manager."""
+        """Load items -- via the domain's enriching loader when it has one."""
+        if self.data_loader is not None:
+            try:
+                self._items = list(self.data_loader(self) or [])
+            except Exception as e:
+                print(f"[{self.domain_title}] Error loading data: {e}")
+                self._items = []
+            return
         if self.data_category is None:
             return
         try:
@@ -247,6 +271,7 @@ class DomainScreen(Screen):
         """Handle CRUD and toggle actions."""
         if action.startswith("toggle_"):
             toggle_key = action[7:]
+            self._toggle_state[toggle_key] = value
             self._handle_toggle(toggle_key, value)
         elif action == "add":
             self._handle_add()

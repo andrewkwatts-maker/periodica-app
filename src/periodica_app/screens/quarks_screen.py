@@ -64,7 +64,9 @@ DISPLAY_CONFIG = [
         "fields": [
             {"key": "Name", "label": "Name"},
             {"key": "Symbol", "label": "Symbol"},
-            {"key": "Type", "label": "Type"},
+            # particle_type_name comes from the enriching loader; the raw
+            # "Type" field is the constant "Subatomic Particle" for every item.
+            {"key": "particle_type_name", "label": "Type"},
         ],
     },
     {
@@ -100,11 +102,30 @@ TOGGLES = [
 ]
 
 
+def _load_enriched_quarks(screen):
+    """Load particles through the enriching QuarkDataLoader.
+
+    The generic DataManager path returns raw JSON with no sm_row/sm_col/
+    particle_type, so quark_standard.compute_positions dropped every particle
+    into the off-screen non-SM fallback -- the default "Standard Model" view
+    did not render as a Standard Model table. The loader's _process_particle
+    adds those fields, and its include flags are what make the antiparticle /
+    composite toggles actually change the loaded data.
+    """
+    from periodica.data.quark_loader import get_quark_loader
+
+    return get_quark_loader().load_all_particles(
+        include_antiparticles=screen.toggle_state("show_antiparticles"),
+        include_composite=screen.toggle_state("show_composites"),
+    )
+
+
 class QuarksScreen(DomainScreen):
     """Quarks domain screen — fully data-driven."""
 
     def __init__(self, **kwargs):
         super().__init__(
+            data_loader=_load_enriched_quarks,
             domain_title="Quarks",
             accent_color=DOMAIN_COLORS["quarks"],
             data_category=DataCategory.QUARKS,
@@ -123,14 +144,13 @@ class QuarksScreen(DomainScreen):
 
     def _handle_toggle(self, key, value):
         """Handle quark-specific toggles."""
-        if key == "show_antiparticles":
-            # Reload with or without antiparticles
-            self.reload_data()
-        elif key == "show_composites":
+        if key in ("show_antiparticles", "show_composites"):
+            # The enriching loader reads toggle_state, so a reload now loads
+            # genuinely different data (it previously re-fetched the same set).
             self.reload_data()
         elif key == "show_connections":
-            # Just redraw
-            self.ids.canvas_view.refresh()
+            # The renderer gates force lines on this canvas property.
+            self.ids.canvas_view.show_connections = value
 
 
 def create_quarks_screen():

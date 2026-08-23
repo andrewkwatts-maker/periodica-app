@@ -30,6 +30,10 @@ class CanvasView(Widget):
     glow_property = ObjectProperty("mass")
     order_property = ObjectProperty("mass")
 
+    # Whether renderers should draw inter-item connection lines (the force
+    # network). A plain canvas-level flag so any domain can gate on it.
+    show_connections = BooleanProperty(False)
+
     # Zoom/pan
     zoom_level = NumericProperty(1.0)
     pan_x = NumericProperty(0)
@@ -54,6 +58,11 @@ class CanvasView(Widget):
         self.bind(layout_mode=self._request_layout)
         self.bind(fill_property=self._request_redraw)
         self.bind(border_property=self._request_redraw)
+        self.bind(show_connections=self._request_redraw)
+        # Sort feeds the LAYOUT (sort_property in _request_layout), so it
+        # needs a re-layout, not a redraw. Without this binding the Sort
+        # spinner did nothing until something else relaid the canvas.
+        self.bind(order_property=self._request_layout)
         self.bind(glow_property=self._request_redraw)
 
     def _on_size_change(self, *args):
@@ -103,6 +112,8 @@ class CanvasView(Widget):
                 "order_property": self.order_property,
                 "selected_item": self.selected_item,
                 "hovered_item": self.hovered_item,
+                "show_connections": self.show_connections,
+                "items": self._positioned_items,
             }
             self.renderer.draw(
                 self.canvas, self._positioned_items, state,
