@@ -151,17 +151,13 @@ class PeriodicaApp(MDApp):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Blue"
 
-        # Set window properties. Desktop only: on Android/iOS the OS owns the
-        # window, and forcing 1200x800 with an 800px minimum on a portrait
-        # phone (buildozer.spec declares portrait) fights the platform.
+        # Desktop-only app (Windows / macOS / Linux).
         Window.clearcolor = BG_DARK
-        from kivy.utils import platform as _platform
-        if _platform not in ("android", "ios"):
-            Window.size = (1200, 800)
-            Window.minimum_width = 800
-            Window.minimum_height = 600
-            Window.left = 100
-            Window.top = 100
+        Window.size = (1200, 800)
+        Window.minimum_width = 800
+        Window.minimum_height = 600
+        Window.left = 100
+        Window.top = 100
 
         Builder.load_string(KV)
         _register_defaults()

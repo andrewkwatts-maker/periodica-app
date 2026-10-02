@@ -7,6 +7,9 @@ build/
 __pycache__/
 *.pyc
 *.pyo
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
 
 # IDE
 .vscode/
@@ -17,7 +20,4 @@ __pycache__/
 Thumbs.db
 
 # Secrets
-config/secrets.json
-
-# CLAUDE.md is Claude Code's per-project context — not part of the source
-CLAUDE.md
+src/periodica_app/config/secrets.json
