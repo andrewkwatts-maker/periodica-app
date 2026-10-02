@@ -19,10 +19,17 @@ HEADLESS_MODULES = [
     "periodica_app.renderers.base_renderer",
     "periodica_app.renderers.quark_renderers",
     "periodica_app.widgets.canvas_view",
+    "periodica_app.widgets.control_specs",
     "periodica_app.widgets.control_drawer",
     "periodica_app.widgets.info_sheet",
+    "periodica_app.views.camera_controller",
+    "periodica_app.views.frame_loop",
+    "periodica_app.views.glsl",
+    "periodica_app.views.fbo_view",
+    "periodica_app.screens.shell_screen",
     "periodica_app.screens.base_screen",
     "periodica_app.screens.quarks_screen",
+    "periodica_app.screens.scene_screen",
 ]
 
 

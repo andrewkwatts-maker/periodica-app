@@ -56,6 +56,9 @@ def pytest_configure(config):
     selected = gpu_tests_selected(config.getoption("markexpr"))
     config.stash[_GPU_SELECTED] = selected
     if selected:
+        # A hidden window reports Metrics.density == 0, so every dp() is 0 and
+        # Kivy's own Slider style raises "Invalid width value".  Pin it.
+        os.environ.setdefault("KIVY_METRICS_DENSITY", "1")
         # Must happen before anything imports kivy.core.window.
         from kivy.config import Config
 

@@ -143,6 +143,16 @@ The plan's ≤ 9 vec4 per-frame uniforms fits even the ES 2.0 minimum of 16.
 11. **Literal emission:** GLSL ES has no implicit int→float conversion, so a
     baked `1` is an `int`. Emit every literal as `%.9e`; 9 significant digits
     round-trip an f32.
+12. **A hidden window reports `Metrics.density == 0`.** Every `dp()` becomes 0,
+    and building a `Slider` raises `GraphicException: Invalid width value`
+    from Kivy's own style. A visible window on this machine reports 1.5
+    (Windows scaling). Hidden-window runs (tier B, CI) must set
+    `KIVY_METRICS_DENSITY=1`; `tests/conftest.py` does.
+13. **Stopping an app whose window was never shown crashes on Windows.**
+    `App.stop()` hits a ctypes `ArgumentError` in the `wm_pen` input
+    provider's `stop()`, and the process exits with code 1. Hidden-window
+    smoke runs should remove the `wm_pen` / `wm_touch` options from Kivy's
+    `[input]` config section. Visible windows are unaffected.
 
 ## Implications for the plan
 
