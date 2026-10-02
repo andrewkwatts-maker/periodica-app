@@ -1,109 +1,30 @@
 """
-DomainScreen — Generic screen template for all 12 scientific domains.
-Each domain screen is just a config dict + this base class.
-Handles layout, controls, info display, and data management generically.
+DomainScreen -- generic screen template for the scientific domains.
+
+Each domain screen is a config dict + this class: layout modes mapped to
+renderers, encodable properties, toggles, an info-sheet layout and an
+optional enriching data loader.  The frame (toolbar, ControlDrawer,
+InfoSheet) comes from ShellScreen; DomainScreen supplies a 2-D CanvasView as
+the main view, published as ``ids.canvas_view``, and wires data, controls and
+selection to it.
 """
 
-from kivy.uix.screenmanager import Screen
-from kivy.properties import (
-    ObjectProperty, StringProperty, DictProperty, ListProperty, BooleanProperty
-)
+from kivy.properties import ObjectProperty, StringProperty, DictProperty, ListProperty
 from kivy.clock import Clock
-from kivy.lang import Builder
 
 from periodica.data.data_manager import get_data_manager
 
-# Imported for their side effect: defining a Widget subclass registers it
-# with the kv Factory, which the <DomainScreen> rule below instantiates by name.
-from periodica_app.widgets.canvas_view import CanvasView  # noqa: F401
-from periodica_app.widgets.control_drawer import ControlDrawer  # noqa: F401
-from periodica_app.widgets.info_sheet import InfoSheet  # noqa: F401
-from periodica_app.theme import ACCENT_PRIMARY
-
-Builder.load_string("""
-<DomainScreen>:
-    BoxLayout:
-        orientation: 'horizontal'
-        pos: root.pos
-        size: root.size
-
-        # Left: Control drawer (collapsible on mobile)
-        ControlDrawer:
-            id: control_drawer
-            size_hint_x: None
-            width: dp(280) if root.show_controls else 0
-            opacity: 1 if root.show_controls else 0
-            title: root.domain_title
-            accent_color: root.accent_color
-
-        # Center + bottom: Canvas + Info
-        BoxLayout:
-            orientation: 'vertical'
-
-            # Toolbar
-            BoxLayout:
-                size_hint_y: None
-                height: dp(48)
-                padding: dp(8)
-                spacing: dp(8)
-                canvas.before:
-                    Color:
-                        rgba: 0.12, 0.12, 0.2, 1
-                    Rectangle:
-                        pos: self.pos
-                        size: self.size
-
-                Button:
-                    text: '\\u2630'
-                    size_hint_x: None
-                    width: dp(48)
-                    font_size: '20sp'
-                    background_color: 0, 0, 0, 0
-                    color: 1, 1, 1, 0.9
-                    on_release: root.toggle_controls()
-
-                Label:
-                    text: root.domain_title
-                    font_size: '16sp'
-                    bold: True
-                    color: root.accent_color
-                    halign: 'left'
-                    valign: 'middle'
-                    text_size: self.size
-
-                Button:
-                    text: 'Info'
-                    size_hint_x: None
-                    width: dp(64)
-                    font_size: '13sp'
-                    background_color: root.accent_color
-                    color: 1, 1, 1, 1
-                    on_release: root.toggle_info()
-
-            # Main canvas
-            CanvasView:
-                id: canvas_view
-
-            # Bottom: Info sheet (collapsible)
-            InfoSheet:
-                id: info_sheet
-                size_hint_y: None
-                height: dp(300) if root.show_info else 0
-                opacity: 1 if root.show_info else 0
-                accent_color: root.accent_color
-""")
+from periodica_app.screens.shell_screen import ShellScreen
+from periodica_app.widgets.canvas_view import CanvasView
 
 
-class DomainScreen(Screen):
+class DomainScreen(ShellScreen):
     """
     Base screen for any scientific domain tab.
     Subclasses provide a config dict and optionally override methods.
     """
 
-    domain_title = StringProperty("Domain")
-    accent_color = ObjectProperty(ACCENT_PRIMARY)
-    show_controls = BooleanProperty(True)
-    show_info = BooleanProperty(False)
+    view_id = "canvas_view"
 
     # ── Configuration (set by subclass) ──────────────────────────────
 
@@ -141,6 +62,9 @@ class DomainScreen(Screen):
     # Standard Model layout dropped every particle into the off-screen
     # non-SM fallback. Domains needing computed fields supply this.
     data_loader = ObjectProperty(None, allownone=True)
+
+    def create_view(self):
+        return CanvasView()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -330,14 +254,6 @@ class DomainScreen(Screen):
     def _handle_toggle(self, key, value):
         """Override in subclass for domain-specific toggles."""
         print(f"[{self.domain_title}] Toggle {key} = {value}")
-
-    # ── UI toggles ───────────────────────────────────────────────────
-
-    def toggle_controls(self):
-        self.show_controls = not self.show_controls
-
-    def toggle_info(self):
-        self.show_info = not self.show_info
 
     def reload_data(self):
         """Reload data from backend and refresh display."""
