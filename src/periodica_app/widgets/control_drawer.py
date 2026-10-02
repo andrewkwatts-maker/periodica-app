@@ -5,19 +5,16 @@ Data-driven: builds controls from a config dict.
 """
 
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.scrollview import ScrollView
 from kivy.uix.label import Label
 from kivy.uix.button import Button
-from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.spinner import Spinner
 from kivy.uix.checkbox import CheckBox
-from kivy.properties import ObjectProperty, StringProperty, ListProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.metrics import dp
 from kivy.lang import Builder
 
 from periodica_app.theme import (
-    BG_PANEL, BG_CONTROL, BG_HOVER, TEXT_PRIMARY, TEXT_SECONDARY,
-    ACCENT_PRIMARY, hex_to_rgba,
+    BG_PANEL, BG_CONTROL, TEXT_PRIMARY, ACCENT_PRIMARY,
 )
 
 Builder.load_string("""

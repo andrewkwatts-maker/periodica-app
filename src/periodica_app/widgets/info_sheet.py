@@ -5,15 +5,13 @@ Data-driven: renders any domain's item data from config.
 """
 
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.scrollview import ScrollView
 from kivy.uix.label import Label
-from kivy.properties import ObjectProperty, StringProperty, DictProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.metrics import dp
 from kivy.lang import Builder
 
 from periodica_app.theme import (
-    BG_PANEL, BG_CARD, TEXT_PRIMARY, TEXT_SECONDARY, ACCENT_INFO,
-    FORCE_COLORS, PARTICLE_TYPE_COLORS,
+    BG_PANEL, TEXT_PRIMARY, TEXT_SECONDARY, ACCENT_INFO,
 )
 
 Builder.load_string("""

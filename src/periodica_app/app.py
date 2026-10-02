@@ -3,23 +3,19 @@ Main application entry point.
 MDApp subclass with ScreenManager and navigation drawer.
 """
 
-import os
 
 from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager, SlideTransition
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.scrollview import ScrollView
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.metrics import dp
 from kivy.core.window import Window
-from kivy.properties import ObjectProperty, StringProperty
+from kivy.properties import ObjectProperty
 
 from kivymd.app import MDApp
 
 from periodica_app.theme import (
-    BG_DARK, BG_PANEL, BG_CONTROL, TEXT_PRIMARY, TEXT_SECONDARY,
-    DOMAIN_COLORS, ACCENT_PRIMARY, hex_to_rgba,
+    BG_DARK, DOMAIN_COLORS, ACCENT_PRIMARY,
 )
 
 # Domain registry: (key, display_name, group)

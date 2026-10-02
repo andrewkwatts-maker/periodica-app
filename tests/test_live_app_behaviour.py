@@ -18,8 +18,6 @@ import os
 
 os.environ.setdefault("KIVY_NO_ARGS", "1")
 
-import pytest
-
 
 # ── the enriching loader (the flagship fix) ──────────────────────────────────
 

@@ -5,23 +5,20 @@ Handles layout, controls, info display, and data management generically.
 """
 
 from kivy.uix.screenmanager import Screen
-from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.floatlayout import FloatLayout
-from kivy.uix.anchorlayout import AnchorLayout
-from kivy.uix.button import Button
 from kivy.properties import (
     ObjectProperty, StringProperty, DictProperty, ListProperty, BooleanProperty
 )
-from kivy.metrics import dp
 from kivy.clock import Clock
 from kivy.lang import Builder
 
 from periodica.data.data_manager import get_data_manager
 
-from periodica_app.widgets.canvas_view import CanvasView
-from periodica_app.widgets.control_drawer import ControlDrawer
-from periodica_app.widgets.info_sheet import InfoSheet
-from periodica_app.theme import BG_DARK, ACCENT_PRIMARY, TEXT_PRIMARY
+# Imported for their side effect: defining a Widget subclass registers it
+# with the kv Factory, which the <DomainScreen> rule below instantiates by name.
+from periodica_app.widgets.canvas_view import CanvasView  # noqa: F401
+from periodica_app.widgets.control_drawer import ControlDrawer  # noqa: F401
+from periodica_app.widgets.info_sheet import InfoSheet  # noqa: F401
+from periodica_app.theme import ACCENT_PRIMARY
 
 Builder.load_string("""
 <DomainScreen>:

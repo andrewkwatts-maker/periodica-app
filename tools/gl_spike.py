@@ -631,7 +631,8 @@ class Spike:
         good = fbo.shader.fs
         fbo.shader.fs = ES_HEADER + "void main(void) { gl_FragColor = vec4(undefined_symbol); }"
         broken_success = bool(fbo.shader.success)
-        log_lines = [line for line in self.shader_log if "fail" in line.lower() or "error" in line.lower()]
+        log_lines = [line for line in self.shader_log
+                     if "fail" in line.lower() or "error" in line.lower()]
         fbo.shader.fs = good
         self.render(fbo)
         self.finish()
@@ -672,7 +673,8 @@ class Spike:
         mismatched = int((np.abs(img.astype(int) - expected).max(axis=2) > 0).sum())
 
         # Row order: a gl_FragCoord.y gradient must increase with row index.
-        grad = self.make_pass((8, 8), GRADIENT_FS, uniforms={"u_resolution": (8.0, 8.0), "u_blue": 0.0})
+        grad = self.make_pass((8, 8), GRADIENT_FS,
+                              uniforms={"u_resolution": (8.0, 8.0), "u_blue": 0.0})
         self.render(grad)
         g = self.read(grad)[:, 0, 1]
         bottom_first = bool(g[0] < g[-1])
@@ -753,7 +755,8 @@ class Spike:
         outcomes["atlas_trilinear_max_err_lsb16"] = worst
 
         res.metrics = outcomes
-        exact = all(v == 0 for k, v in outcomes.items() if k.startswith("copy_") and k.endswith("diff"))
+        exact = all(v == 0 for k, v in outcomes.items()
+                    if k.startswith("copy_") and k.endswith("diff"))
         res.status = PASS if exact and worst <= 1 else FAIL
         res.notes.append("bind extra textures with BindTexture(texture=t, index=n) and set the "
                          "sampler uniform to the int n; set wrap='clamp_to_edge' for NPOT")
@@ -937,8 +940,9 @@ class Spike:
         if mp_ok and mp_bits < 23:
             res.notes.append(f"mediump is a real {mp_bits}-bit mantissa here: densities, "
                              "exp() arguments and phases must be highp")
-        res.notes.append("kivy.graphics.opengl.glGetIntegerv raises KeyError for pnames missing "
-                         "from its size table (e.g. desktop-only GL_MAX_FRAGMENT_UNIFORM_COMPONENTS)")
+        res.notes.append("kivy.graphics.opengl.glGetIntegerv raises KeyError for pnames "
+                         "missing from its size table (e.g. desktop-only "
+                         "GL_MAX_FRAGMENT_UNIFORM_COMPONENTS)")
         return res
 
     # -- (g) ----------------------------------------------------------------
