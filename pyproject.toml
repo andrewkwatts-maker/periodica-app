@@ -52,6 +52,12 @@ where = ["src"]
 [tool.setuptools.package-data]
 periodica_app = ["config/*.json", "kv/*.kv"]
 
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "gpu: tier B - needs a real GL context (hidden Kivy window); opt-in, run with -m gpu",
+]
+
 [tool.ruff]
 target-version = "py310"
 line-length = 100

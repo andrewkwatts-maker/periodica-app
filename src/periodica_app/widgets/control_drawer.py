@@ -7,7 +7,6 @@ Data-driven: builds controls from a config dict.
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.button import Button
-from kivy.uix.spinner import Spinner
 from kivy.uix.checkbox import CheckBox
 from kivy.properties import ObjectProperty, StringProperty
 from kivy.metrics import dp
@@ -65,13 +64,6 @@ Builder.load_string("""
     valign: 'bottom'
     text_size: self.size
     padding: 0, dp(8)
-
-<ControlSpinner>:
-    size_hint_y: None
-    height: dp(40)
-    background_color: 0.176, 0.176, 0.255, 1
-    color: 1, 1, 1, 0.9
-    font_size: '13sp'
 """)
 
 
@@ -80,9 +72,27 @@ class SectionLabel(Label):
     pass
 
 
-class ControlSpinner(Spinner):
-    """Styled spinner for control options."""
-    pass
+SPINNER_BACKGROUND = (0.176, 0.176, 0.255, 1)
+
+
+def make_spinner(text, values):
+    """A styled Spinner for one drawer option.
+
+    ``kivy.uix.spinner`` imports ``kivy.uix.dropdown``, which creates the
+    Window at import time.  Importing it here, at build time, keeps this
+    module importable without a GL context (tier-A tests, headless CI).
+    """
+    from kivy.uix.spinner import Spinner
+
+    return Spinner(
+        text=text,
+        values=values,
+        size_hint_y=None,
+        height=dp(40),
+        background_color=SPINNER_BACKGROUND,
+        color=(1, 1, 1, 0.9),
+        font_size="13sp",
+    )
 
 
 class ControlDrawer(BoxLayout):
@@ -139,10 +149,7 @@ class ControlDrawer(BoxLayout):
             box.add_widget(SectionLabel(text="Layout Mode", color=self.accent_color))
             layout_names = list(config["layout_modes"].keys())
             default = config.get("default_layout", layout_names[0])
-            spinner = ControlSpinner(
-                text=default,
-                values=layout_names,
-            )
+            spinner = make_spinner(default, layout_names)
             spinner.bind(text=self._on_layout_spinner_change)
             self.layout_spinner = spinner
             box.add_widget(spinner)
@@ -152,35 +159,24 @@ class ControlDrawer(BoxLayout):
             prop_names = list(config["properties"].keys())
 
             box.add_widget(SectionLabel(text="Fill Color", color=self.accent_color))
-            self.fill_spinner = ControlSpinner(
-                text=config.get("fill_default", prop_names[0]),
-                values=prop_names,
-            )
+            self.fill_spinner = make_spinner(config.get("fill_default", prop_names[0]), prop_names)
             self.fill_spinner.bind(text=self._on_fill_spinner_change)
             box.add_widget(self.fill_spinner)
 
             box.add_widget(SectionLabel(text="Border Color", color=self.accent_color))
-            self.border_spinner = ControlSpinner(
-                text=config.get("border_default", prop_names[0]),
-                values=prop_names,
-            )
+            self.border_spinner = make_spinner(
+                config.get("border_default", prop_names[0]), prop_names)
             self.border_spinner.bind(text=self._on_border_spinner_change)
             box.add_widget(self.border_spinner)
 
             box.add_widget(SectionLabel(text="Glow Effect", color=self.accent_color))
-            self.glow_spinner = ControlSpinner(
-                text=config.get("glow_default", "None"),
-                values=prop_names,
-            )
+            self.glow_spinner = make_spinner(config.get("glow_default", "None"), prop_names)
             self.glow_spinner.bind(text=self._on_glow_spinner_change)
             box.add_widget(self.glow_spinner)
 
             # Sort property (for linear layouts)
             box.add_widget(SectionLabel(text="Sort By", color=self.accent_color))
-            self.sort_spinner = ControlSpinner(
-                text=config.get("sort_default", prop_names[0]),
-                values=prop_names,
-            )
+            self.sort_spinner = make_spinner(config.get("sort_default", prop_names[0]), prop_names)
             self.sort_spinner.bind(text=self._on_sort_spinner_change)
             box.add_widget(self.sort_spinner)
 
