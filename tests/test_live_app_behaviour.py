@@ -14,12 +14,6 @@ items from. All deleted. These tests target the defects actually fixed:
 """
 from __future__ import annotations
 
-import os
-
-os.environ.setdefault("KIVY_NO_ARGS", "1")
-
-import pytest
-
 
 # ── the enriching loader (the flagship fix) ──────────────────────────────────
 

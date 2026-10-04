@@ -3,7 +3,6 @@ Color utility functions for Kivy Canvas rendering.
 All functions return RGBA tuples in 0-1 range.
 """
 
-import math
 
 
 def hex_to_rgba(hex_color, alpha=1.0):

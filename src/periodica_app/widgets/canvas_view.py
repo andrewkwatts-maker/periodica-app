@@ -6,11 +6,10 @@ Handles rendering, touch interaction (tap, pan, zoom), and item selection.
 
 from kivy.uix.widget import Widget
 from kivy.properties import (
-    ObjectProperty, NumericProperty, BooleanProperty, DictProperty, ListProperty
+    ObjectProperty, NumericProperty, BooleanProperty, ListProperty
 )
 from kivy.graphics import Color, Rectangle, PushMatrix, PopMatrix, Translate, Scale
 from kivy.clock import Clock
-from kivy.core.window import Window
 
 
 class CanvasView(Widget):

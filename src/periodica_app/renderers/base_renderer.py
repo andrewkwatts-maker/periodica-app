@@ -5,15 +5,12 @@ All domain renderers inherit from this.
 """
 
 from abc import ABC, abstractmethod
-import math
 
 from kivy.graphics import (
     Color, Ellipse, Rectangle, Line, RoundedRectangle,
-    PushMatrix, PopMatrix, Translate, Scale, Rotate,
 )
 from kivy.core.text import Label as CoreLabel
 
-from periodica_app.utils.color_utils import lerp_color
 
 
 class BaseRenderer(ABC):

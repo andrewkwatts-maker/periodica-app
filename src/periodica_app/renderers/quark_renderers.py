@@ -4,10 +4,8 @@ Each renderer delegates position computation to periodica.layout_math
 and handles only the drawing.
 """
 
-import math
 
-from kivy.graphics import Color, Ellipse, Rectangle, Line, RoundedRectangle
-from kivy.core.text import Label as CoreLabel
+from kivy.graphics import Color, RoundedRectangle
 
 from periodica.layout_math import (
     quark_standard, quark_circular, quark_linear, quark_alternative,
@@ -17,11 +15,10 @@ from periodica.layout_math import (
 
 from periodica_app.renderers.base_renderer import BaseRenderer
 from periodica_app.theme import (
-    PARTICLE_TYPE_COLORS, TEXT_PRIMARY, BG_CARD, ACCENT_INFO,
-    hex_to_rgba,
+    PARTICLE_TYPE_COLORS, TEXT_PRIMARY, ACCENT_INFO,
 )
 from periodica_app.utils.color_utils import (
-    lerp_color, value_to_gradient_color, get_property_color,
+    value_to_gradient_color,
 )
 
 

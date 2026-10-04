@@ -3,23 +3,19 @@ Main application entry point.
 MDApp subclass with ScreenManager and navigation drawer.
 """
 
-import os
 
 from kivy.lang import Builder
-from kivy.uix.screenmanager import ScreenManager, SlideTransition
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.scrollview import ScrollView
 from kivy.uix.button import Button
 from kivy.uix.label import Label
 from kivy.metrics import dp
 from kivy.core.window import Window
-from kivy.properties import ObjectProperty, StringProperty
+from kivy.properties import ObjectProperty
 
 from kivymd.app import MDApp
 
 from periodica_app.theme import (
-    BG_DARK, BG_PANEL, BG_CONTROL, TEXT_PRIMARY, TEXT_SECONDARY,
-    DOMAIN_COLORS, ACCENT_PRIMARY, hex_to_rgba,
+    BG_DARK, DOMAIN_COLORS, ACCENT_PRIMARY,
 )
 
 # Domain registry: (key, display_name, group)
@@ -155,17 +151,13 @@ class PeriodicaApp(MDApp):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Blue"
 
-        # Set window properties. Desktop only: on Android/iOS the OS owns the
-        # window, and forcing 1200x800 with an 800px minimum on a portrait
-        # phone (buildozer.spec declares portrait) fights the platform.
+        # Desktop-only app (Windows / macOS / Linux).
         Window.clearcolor = BG_DARK
-        from kivy.utils import platform as _platform
-        if _platform not in ("android", "ios"):
-            Window.size = (1200, 800)
-            Window.minimum_width = 800
-            Window.minimum_height = 600
-            Window.left = 100
-            Window.top = 100
+        Window.size = (1200, 800)
+        Window.minimum_width = 800
+        Window.minimum_height = 600
+        Window.left = 100
+        Window.top = 100
 
         Builder.load_string(KV)
         _register_defaults()

@@ -1,47 +1,66 @@
 # Periodica App
 
-A scientific visualization application for exploring particle physics, atomic chemistry, molecular chemistry, materials science, alloy thermodynamics, and biological systems.
+A desktop app for exploring the [periodica](https://pypi.org/project/periodica/)
+scientific library, built with Kivy and KivyMD. It runs on Windows, macOS and
+Linux. All the science (data, registries, layouts, calculators) comes from
+`periodica`; this package only presents it.
 
-Built on the [periodica](https://pypi.org/project/periodica/) computation library with a PySide6 GUI.
+> **Desktop only.** The Android/APK build (buildozer) was dropped on
+> 2026-10-02. Mobile is not a supported target.
 
-## Installation
+## Install and run
 
 ```bash
 pip install periodica-app
+periodica-app              # or: python -m periodica_app
 ```
 
-## Quick Start
+## What is in it
 
-```bash
-# From command line
-periodica-app
-
-# Or as a Python module
-python -m periodica_app
-```
-
-## Features
-
-- **12 interactive tabs**: Elements, Quarks, Subatomic Particles, Molecules, Alloys, Materials, Amino Acids, Proteins, Nucleic Acids, Cell Components, Cells, Biomaterials
-- **35 layout modes**: Table, circular, spiral, linear, eightfold way, force network, and more
-- **Property encoding**: Color-map any property across the visualization
-- **Data editing**: Create, edit, and manage scientific data with built-in JSON editor
-- **AI generation**: Generate new data entries using Gemini API integration
-- **Derivation cascades**: Propagate changes through the full physics derivation chain
-- **Spectroscopy**: Emission spectrum visualization for elements
-- **SDF rendering**: Signed distance field particle visualization
+- **Quarks:** the Standard Model and particle zoo. It offers eight layouts
+  (Standard Model, circular, linear, alternative, force network, mass spiral,
+  fermion/boson, charge vs mass). Fill, border, glow and sort can each encode
+  any property, colour ranges follow the data, and there are toggles for
+  antiparticles, composites and force lines. Tap a particle for details.
+- **Coming next:** the other domains listed in the navigation panel (Subatomic,
+  Atoms, Molecules, Alloys, Materials, Amino Acids, Proteins, Nucleic Acids,
+  Cell Components, Cells, Biomaterials). These are greyed out until their
+  screen is registered. Also planned: a physically accurate, in-house 3-D
+  renderer for atomic orbitals and molecules, using GPU ray marching of
+  hydrogen-like and Hartree–Fock densities.
 
 ## Architecture
 
-This app depends on `periodica` for all scientific computation:
+```
+periodica-app (this package)                periodica (pip install periodica)
+├── app.py      MDApp shell + domain registry
+├── screens/    DomainScreen = config + view ←── data registry, quark loader
+├── renderers/  draw positioned items       ←── layout_math (positions)
+└── widgets/    canvas, drawer, info sheet
+```
 
+A domain screen is configuration: layout modes mapped to renderers, the
+properties to encode, toggles, and the info-panel layout. See
+`src/periodica_app/screens/quarks_screen.py`.
+
+## Development
+
+```bash
+pip install -e ".[dev]"   # editable install with pytest, ruff, pyinstaller
+
+build.bat                 # Windows: ruff + headless tests
+./build.sh                # macOS / Linux / Git Bash: the same
+build.bat gpu             # ... plus GPU tests (needs a GL context)
+build.bat exe             # ... plus a PyInstaller build in dist/PeriodicaApp/
 ```
-periodica-app (this package)     periodica (pip install periodica)
-├── UI / visualization       ←── ├── Calculators
-├── Layouts / rendering      ←── ├── Data loaders (627 JSON files)
-├── Control panels           ←── ├── Predictors / derivation chains
-└── Dialogs / editors        ←── └── Enums / constants
-```
+
+There are two test tiers. The default **tier A** is pure logic and never opens
+a window, so it runs on headless CI; the suite enforces this. **Tier B**
+(`pytest -m gpu`) needs a GL context and runs in a hidden window.
+
+`python tools/gl_spike.py --matrix` checks the GPU features the planned 3-D
+renderer depends on. The results and Kivy pitfalls are written up in
+[docs/dev/gl-spike.md](docs/dev/gl-spike.md).
 
 ## License
 
